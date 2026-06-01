@@ -1,0 +1,47 @@
+# .github/workflows/daily-news.yml
+name: Daily News
+
+on:
+  schedule:
+    # Run daily at 00:00 UTC = 08:00 CST (China Standard Time)
+    - cron: '0 0 * * *'
+  workflow_dispatch:  # Allow manual trigger for testing
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Fetch news from RSS feeds
+        run: python scripts/fetch_news.py
+
+      - name: Generate AI summaries
+        env:
+          DEEPSEEK_API_URL: ${{ secrets.DEEPSEEK_API_URL }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          DEEPSEEK_MODEL: ${{ secrets.DEEPSEEK_MODEL }}
+        run: python scripts/summarize.py
+
+      - name: Build static site
+        run: python scripts/build_site.py
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          keep_files: true

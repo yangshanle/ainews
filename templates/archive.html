@@ -1,0 +1,72 @@
+{# templates/archive.html — Single-day archive page #}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI News Daily — {{ date_cn }} 归档</title>
+  <meta name="description" content="AI 新闻日报 - {{ date_cn }} 新闻存档">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="header-content">
+    <h1>📡 AI News Daily <span>· 新闻存档</span></h1>
+    <div class="header-date">{{ date_cn }} · {{ weekday_cn }}</div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">导航</div>
+      <a class="archive-link" href="../index.html">← 返回今日</a>
+    </div>
+    {% if archives %}
+    <div class="sidebar-section">
+      <div class="sidebar-title">其他日期</div>
+      {% for a in archives %}
+      <a class="archive-link" href="{{ a.file }}">{{ a.label }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </aside>
+
+  <main class="main-content">
+    <div class="archive-header">
+      <h2>{{ date_cn }} 新闻存档</h2>
+      <p style="color: var(--text-secondary); margin-top: 4px;">共 {{ stats.total }} 篇新闻</p>
+    </div>
+
+    {% for cat_id, cat_name, icon, articles in categories %}
+    <section class="category-section">
+      <div class="category-header">
+        <span class="category-icon">{{ icon }}</span>
+        <span class="category-name">{{ cat_name }}</span>
+        <span class="category-count">{{ articles|length }} 篇</span>
+      </div>
+
+      {% for article in articles %}
+      <article class="news-card" data-category="{{ cat_id }}">
+        <h3><a href="{{ article.link }}" target="_blank" rel="noopener">{{ article.title }}</a></h3>
+        {% if article.ai_summary %}
+        <div class="ai-summary">{{ article.ai_summary }}</div>
+        {% endif %}
+        <div class="meta">
+          <span class="source-tag">{{ article.source }}</span>
+        </div>
+      </article>
+      {% endfor %}
+    </section>
+    {% endfor %}
+  </main>
+</div>
+
+<footer class="footer">
+  <p>数据来源: RSS Feeds · 摘要由 DeepSeek AI 生成</p>
+  <p>Powered by GitHub Actions + GitHub Pages</p>
+</footer>
+
+</body>
+</html>

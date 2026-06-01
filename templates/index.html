@@ -1,0 +1,111 @@
+{# templates/index.html — Main daily news page #}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI News Daily — {{ date_cn }}</title>
+  <meta name="description" content="AI 新闻日报 - 每日 AI、科技、热点新闻精选摘要">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="header-content">
+    <h1>📡 AI News Daily <span>· 每日新闻精选</span></h1>
+    <div class="header-date">{{ date_cn }} · {{ weekday_cn }}</div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">分类筛选</div>
+      <button class="filter-btn active" data-filter="all" onclick="filterNews('all')">
+        📋 全部 <span class="filter-count">{{ stats.total }}</span>
+      </button>
+      <button class="filter-btn" data-filter="ai" onclick="filterNews('ai')">
+        🤖 AI <span class="filter-count">{{ stats.ai }}</span>
+      </button>
+      <button class="filter-btn" data-filter="tech" onclick="filterNews('tech')">
+        🖥️ 科技 <span class="filter-count">{{ stats.tech }}</span>
+      </button>
+      <button class="filter-btn" data-filter="general" onclick="filterNews('general')">
+        🌍 综合 <span class="filter-count">{{ stats.general }}</span>
+      </button>
+    </div>
+
+    {% if archives %}
+    <div class="sidebar-section">
+      <div class="sidebar-title">历史存档</div>
+      {% for a in archives %}
+      <a class="archive-link" href="archives/{{ a.file }}">{{ a.label }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </aside>
+
+  <main class="main-content">
+    {% if top_story %}
+    <div class="top-story">
+      <div class="top-story-badge">🔥 今日头条</div>
+      <h2><a href="{{ top_story.link }}" target="_blank" rel="noopener">{{ top_story.title }}</a></h2>
+      {% if top_story.ai_summary %}
+      <div class="summary">{{ top_story.ai_summary }}</div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    {% for cat_id, cat_name, icon, articles in categories %}
+    <section class="category-section" id="section-{{ cat_id }}">
+      <div class="category-header">
+        <span class="category-icon">{{ icon }}</span>
+        <span class="category-name">{{ cat_name }}</span>
+        <span class="category-count">{{ articles|length }} 篇</span>
+      </div>
+
+      {% for article in articles %}
+      <article class="news-card" data-category="{{ cat_id }}">
+        <h3><a href="{{ article.link }}" target="_blank" rel="noopener">{{ article.title }}</a></h3>
+        {% if article.ai_summary %}
+        <div class="ai-summary">{{ article.ai_summary }}</div>
+        {% endif %}
+        <div class="meta">
+          <span class="source-tag">{{ article.source }}</span>
+          {% if article.published %}
+          <span>{{ article.published[:10] }}</span>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </section>
+    {% endfor %}
+  </main>
+</div>
+
+<footer class="footer">
+  <p>数据来源: RSS Feeds · 摘要由 DeepSeek AI 生成</p>
+  <p>Powered by GitHub Actions + GitHub Pages · Built {{ fetched_at }}</p>
+</footer>
+
+<script>
+function filterNews(category) {
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.filter === category);
+  });
+  document.querySelectorAll('.news-card').forEach(card => {
+    card.classList.toggle('hidden', category !== 'all' && card.dataset.category !== category);
+  });
+  document.querySelectorAll('.category-section').forEach(section => {
+    const visibleCards = section.querySelectorAll('.news-card:not(.hidden)');
+    section.style.display = (category === 'all' || visibleCards.length > 0) ? '' : 'none';
+  });
+}
+document.addEventListener('keydown', function(e) {
+  const map = { '1': 'all', '2': 'ai', '3': 'tech', '4': 'general' };
+  if (e.key in map) filterNews(map[e.key]);
+});
+</script>
+
+</body>
+</html>

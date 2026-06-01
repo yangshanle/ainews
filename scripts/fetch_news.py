@@ -3,6 +3,7 @@
 
 import hashlib
 import json
+import re
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -18,20 +19,36 @@ RAW_OUTPUT = BASE_DIR / "news_raw.json"
 SEEN_FILE = BASE_DIR / ".seen_urls.json"
 
 REQUEST_TIMEOUT = 15  # seconds per feed
+MAX_ARTICLES_PER_FEED = 30
+SUMMARY_MAX_LENGTH = 300
+
+# HTML tag stripping pattern
+HTML_TAG_RE = re.compile(r"<[^>]+>")
 
 def load_sources():
     with open(CONFIG_PATH, "r", encoding="utf-8") as f:
-        return yaml.safe_load(f)["sources"]
+        data = yaml.safe_load(f)
+    if not data or "sources" not in data:
+        print("  ⚠️  sources.yml is empty or missing 'sources' key")
+        return []
+    return data["sources"]
 
 def load_seen_urls():
     if SEEN_FILE.exists():
-        with open(SEEN_FILE, "r", encoding="utf-8") as f:
-            return set(json.load(f))
+        try:
+            with open(SEEN_FILE, "r", encoding="utf-8") as f:
+                return set(json.load(f))
+        except (json.JSONDecodeError, OSError) as e:
+            print(f"  ⚠️  Corrupt .seen_urls.json, starting fresh: {e}")
+            return set()
     return set()
 
 def save_seen_urls(urls: set):
-    with open(SEEN_FILE, "w", encoding="utf-8") as f:
-        json.dump(sorted(urls), f, ensure_ascii=False)
+    try:
+        with open(SEEN_FILE, "w", encoding="utf-8") as f:
+            json.dump(sorted(urls), f, ensure_ascii=False)
+    except OSError as e:
+        print(f"  ⚠️  Failed to save .seen_urls.json: {e}")
 
 def fetch_rss(source: dict) -> list:
     """Fetch a single RSS feed and return articles."""
@@ -56,7 +73,7 @@ def fetch_rss(source: dict) -> list:
                     articles.append({
                         "title": title.strip(),
                         "link": link,
-                        "summary": (hit.get("story_text") or "")[:300],
+                        "summary": (hit.get("story_text") or "")[:SUMMARY_MAX_LENGTH],
                         "published": hit.get("created_at", ""),
                         "source": source["name"],
                         "category": source["category"],
@@ -66,16 +83,16 @@ def fetch_rss(source: dict) -> list:
     else:
         # RSS/Atom feed
         feed = feedparser.parse(resp.content)
-        for entry in feed.entries[:30]:
+        for entry in feed.entries[:MAX_ARTICLES_PER_FEED]:
             link = entry.get("link", "")
             title = entry.get("title", "")
             if not title or not link:
                 continue
             pub = entry.get("published_parsed") or entry.get("updated_parsed")
             pub_str = time.strftime("%Y-%m-%dT%H:%M:%SZ", pub) if pub else ""
-            summary = (entry.get("summary") or entry.get("description") or "")[:300]
+            summary = (entry.get("summary") or entry.get("description") or "")[:SUMMARY_MAX_LENGTH]
             # Strip HTML tags from summary
-            summary = summary.replace("<p>", " ").replace("</p>", " ").replace("<br>", " ").replace("</br>", " ")
+            summary = HTML_TAG_RE.sub(" ", summary).strip()
             articles.append({
                 "title": title.strip(),
                 "link": link,

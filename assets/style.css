@@ -1,0 +1,344 @@
+/* docs/assets/style.css — Claude Orange Theme for AI News Daily */
+
+:root {
+  --orange: #E05A1F;
+  --orange-light: #FDE8D8;
+  --orange-bg: #FFF3E6;
+  --white: #FFFFFF;
+  --bg: #FFF8F0;
+  --text: #1A1A2E;
+  --text-secondary: #6B7280;
+  --border: #E5E7EB;
+  --shadow: 0 2px 8px rgba(0,0,0,0.06);
+  --radius: 12px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #E05A1F 0%, #D4501C 50%, #C04518 100%);
+  color: white;
+  padding: 24px 32px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(224, 90, 31, 0.3);
+}
+
+.header-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.header h1 span {
+  font-weight: 300;
+  opacity: 0.85;
+}
+
+.header-date {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* Layout */
+.layout {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  gap: 28px;
+  padding: 28px 32px;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 90px;
+  align-self: start;
+}
+
+.sidebar-section {
+  margin-bottom: 24px;
+}
+
+.sidebar-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.filter-btn {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  margin-bottom: 4px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+}
+
+.filter-btn:hover {
+  background: var(--orange-light);
+}
+
+.filter-btn.active {
+  background: var(--orange-light);
+  color: var(--orange);
+  font-weight: 600;
+  border-color: var(--orange);
+}
+
+.filter-count {
+  float: right;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+/* Archive links */
+.archive-link {
+  display: block;
+  padding: 6px 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+
+.archive-link:hover {
+  background: var(--orange-light);
+  color: var(--orange);
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Breaking / Top Story */
+.top-story {
+  background: var(--orange-bg);
+  border-left: 4px solid var(--orange);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+
+.top-story-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--orange);
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.top-story h2 {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.top-story h2 a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.top-story h2 a:hover {
+  color: var(--orange);
+}
+
+.top-story .summary {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Category Section */
+.category-section {
+  margin-bottom: 32px;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+}
+
+.category-icon {
+  font-size: 20px;
+}
+
+.category-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.category-count {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-left: auto;
+}
+
+/* News Card */
+.news-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border-left: 3px solid var(--orange);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.news-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.news-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.news-card h3 a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.news-card h3 a:hover {
+  color: var(--orange);
+}
+
+.news-card .ai-summary {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.news-card .meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+.news-card .source-tag {
+  display: inline-block;
+  background: var(--orange-light);
+  color: var(--orange);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 32px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  border-top: 1px solid var(--border);
+  margin-top: 16px;
+}
+
+.footer a {
+  color: var(--orange);
+  text-decoration: none;
+}
+
+/* Hidden category (for filtering) */
+.news-card.hidden {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+    padding: 16px;
+  }
+  .sidebar {
+    width: 100%;
+    position: static;
+  }
+  .filter-btn {
+    display: inline-block;
+    width: auto;
+    margin-right: 4px;
+  }
+  .header {
+    padding: 16px;
+  }
+}
+
+/* Loading / Empty states */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+
+.empty-state .emoji {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+/* Archive page */
+.archive-header {
+  margin-bottom: 24px;
+}
+
+.archive-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.archive-nav a {
+  color: var(--orange);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.archive-nav a:hover {
+  text-decoration: underline;
+}

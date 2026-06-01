@@ -3,6 +3,7 @@
 
 import json
 import os
+import re
 import time
 from pathlib import Path
 
@@ -33,13 +34,13 @@ def summarize_batch(articles: list) -> list:
     lines = []
     for i, a in enumerate(articles):
         title = a["title"][:150]
-        summary = a["summary"][:200]
+        summary = (a["summary"] or "(no summary)")[:200]
         lines.append(f"{i+1}. Title: {title}\n   Excerpt: {summary}")
 
     prompt = f"""You are a Chinese news summarizer. For each news article below, write a ONE-SENTENCE Chinese summary (≤25 Chinese characters) that captures the core event. Return ONLY valid JSON array of strings, no other text.
 
 Articles:
-{chr(10).join(lines)}
+{"\n".join(lines)}
 """
 
     headers = {
@@ -60,13 +61,14 @@ Articles:
             data = resp.json()
             content = data["choices"][0]["message"]["content"].strip()
 
-            # Parse JSON array from response
+            # Strip markdown code fences (```json ... ```) then parse JSON
+            content = re.sub(r"^```(?:json)?\s*|\s*```$", "", content.strip())
             summaries = json.loads(content)
             if not isinstance(summaries, list) or len(summaries) != len(articles):
                 raise ValueError(f"Expected {len(articles)} summaries, got {len(summaries) if isinstance(summaries, list) else 0}")
 
             for a, s in zip(articles, summaries):
-                a["ai_summary"] = s.strip()
+                a["ai_summary"] = s.strip()[:25]  # Enforce ≤25 chars
             return articles
 
         except Exception as e:
@@ -80,7 +82,7 @@ Articles:
     return articles
 
 
-def main():
+def main() -> None:
     print("Generating AI summaries...")
 
     if not RAW_INPUT.exists():
@@ -90,7 +92,10 @@ def main():
     with open(RAW_INPUT, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    articles = data["articles"]
+    articles = data.get("articles", [])
+    if not articles:
+        print("  ⚠️  No articles found in news_raw.json.")
+        return
     print(f"  Total articles to summarize: {len(articles)}")
 
     # Process in batches

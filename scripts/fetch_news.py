@@ -13,7 +13,6 @@ import yaml
 
 # Paths
 BASE_DIR = Path(__file__).resolve().parent.parent
-# BUGFIX: The plan had this line with a missing closing quote — fixed here:
 CONFIG_PATH = BASE_DIR / "config" / "sources.yml"
 RAW_OUTPUT = BASE_DIR / "news_raw.json"
 SEEN_FILE = BASE_DIR / ".seen_urls.json"
@@ -57,7 +56,7 @@ def fetch_rss(source: dict) -> list:
                     articles.append({
                         "title": title.strip(),
                         "link": link,
-                        "summary": hit.get("story_text", "")[:300] or "",
+                        "summary": (hit.get("story_text") or "")[:300],
                         "published": hit.get("created_at", ""),
                         "source": source["name"],
                         "category": source["category"],

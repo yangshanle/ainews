@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.env
+*.json
+!requirements.txt
+*.local/
+.seen_urls.json
+news_raw.json
+news_final.json

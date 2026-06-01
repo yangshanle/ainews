@@ -1,0 +1,50 @@
+# config/sources.yml — RSS news sources
+sources:
+  - name: Hacker News AI
+    url: https://hn.algolia.com/api/v1/search?query=AI&tags=story&hitsPerPage=20
+    category: ai
+    type: json
+  - name: TechCrunch AI
+    url: https://techcrunch.com/category/artificial-intelligence/feed/
+    category: ai
+    type: rss
+  - name: The Verge AI
+    url: https://www.theverge.com/ai-artificial-intelligence/rss.xml
+    category: ai
+    type: rss
+  - name: 机器之心
+    url: https://www.jiqizhixin.com/rss
+    category: ai
+    type: rss
+  - name: 量子位
+    url: https://www.qbitai.com/feed
+    category: ai
+    type: rss
+  - name: ArXiv NLP
+    url: http://export.arxiv.org/rss/cs.CL
+    category: ai
+    type: rss
+  - name: 36氪
+    url: https://36kr.com/feed
+    category: tech
+    type: rss
+  - name: InfoQ 中文
+    url: https://www.infoq.cn/feed
+    category: tech
+    type: rss
+  - name: Solidot
+    url: https://solidot.org/feed
+    category: tech
+    type: rss
+  - name: 澎湃新闻
+    url: https://www.thepaper.cn/rss/news.xml
+    category: general
+    type: rss
+  - name: BBC News
+    url: https://feeds.bbci.co.uk/news/rss.xml
+    category: general
+    type: rss
+  - name: Reuters Top News
+    url: https://www.reutersagency.com/feed/?best-topics=business-news&post_type=best
+    category: general
+    type: rss

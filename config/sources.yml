@@ -21,7 +21,7 @@ sources:
     category: ai
     type: rss
   - name: ArXiv NLP
-    url: http://export.arxiv.org/rss/cs.CL
+    url: https://rss.arxiv.org/rss/cs.CL
     category: ai
     type: rss
   - name: 36氪
